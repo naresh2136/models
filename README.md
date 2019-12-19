@@ -37,3 +37,54 @@ class Item(models.Model):
     description = models.CharField(max_length=100)
     size = models.CharField(choices=ITEM_SIZES,max_length=1)
     
+
+'≠================='
+class Video(models.Model):
+    name= models.CharField(max_length=500)
+    description= models.TextField()
+    videofile= models.FileField(upload_to='videos/', validators= [validate_video])
+
+from django.shortcuts import render
+from .models import Video
+
+
+def showvideo(request):
+ 
+    allvideos= Video.objects.all()
+    
+    context= {'allvideos': allvideos}
+
+        
+    return render(request, 'Blog/home.html', context)
+
+
+html>
+<head>
+<meta charset="UTF-8">
+<title>Videos</title>
+</head>
+<body>
+
+
+
+<h1>List of Videos</h1>
+<table border="1" width="600">
+<tr>
+<td>Name</td>
+<td>Description</td>
+<td>Video File</td>
+</tr>
+
+{% for video in allvideos %}
+<tr>
+<td>{{ video.name }}</td>
+<td>
+{{ video.description }}</td>
+<td><video width='400' controls>
+<source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
+Your browser does not support the video tag.
+</video>
+</td>
+</tr>
+{% endfor %}
+</table>
